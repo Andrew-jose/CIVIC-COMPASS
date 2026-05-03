@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "Civic Compass",
+    "tagline": "Every citizen. Every election. Zero confusion.",
+    "getStarted": "Get Started",
+    "backToHome": "← Home"
+  },
+  "landing": {
+    "heroTitle": "Your Personal Election Guide",
+    "heroSubtitle": "AI-powered civic intelligence that walks you through every step of the election process — personalized to your exact jurisdiction.",
+    "addressPlaceholder": "Enter your address to get started...",
+    "startJourney": "Start My Journey",
+    "features": {
+      "timeline": "Election Timeline",
+      "timelineDesc": "Visual interactive timeline with all your key election dates",
+      "checklist": "Voter Checklist",
+      "checklistDesc": "Personalized step-by-step readiness checklist",
+      "ballot": "Ballot Explainer",
+      "ballotDesc": "Upload your ballot for plain-language explanations",
+      "factcheck": "Fact Checker",
+      "factcheckDesc": "Verify civic claims with official sources"
+    },
+    "trust": "Non-partisan • Official sources only • Zero hallucination"
+  },
+  "journey": {
+    "title": "Your Election Journey",
+    "inputPlaceholder": "Ask about voting, registration, deadlines...",
+    "send": "Send",
+    "suggestions": {
+      "register": "How do I register to vote?",
+      "deadline": "When is the registration deadline?",
+      "id": "What ID do I need to vote?",
+      "mail": "How do I vote by mail?"
+    }
+  },
+  "timeline": {
+    "title": "Election Timeline",
+    "nextDeadline": "Next Deadline",
+    "daysLeft": "days left",
+    "setReminder": "Set Reminder"
+  },
+  "checklist": {
+    "title": "Voter Readiness Checklist",
+    "progress": "Progress",
+    "complete": "You're fully prepared to vote! 🎉",
+    "critical": "Critical",
+    "important": "Important",
+    "optional": "Optional"
+  },
+  "ballot": {
+    "title": "Ballot Explainer",
+    "uploadPrompt": "Upload your ballot PDF for a plain-language breakdown",
+    "dragDrop": "Drag & drop your ballot PDF here",
+    "analyzing": "Analyzing your ballot..."
+  },
+  "factcheck": {
+    "title": "Civic Fact Checker",
+    "inputPlaceholder": "Enter a civic claim to verify...",
+    "verify": "Verify Claim",
+    "verdicts": {
+      "true": "True",
+      "false": "False",
+      "partial": "Partially True",
+      "unverifiable": "Unverifiable"
+    }
+  },
+  "history": {
+    "title": "Session History",
+    "empty": "Your previous conversations, saved timelines, and completed checklists will appear here.",
+    "clearAll": "Clear All",
+    "resume": "Resume"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "sources": "Sources",
+    "confidence": "Confidence",
+    "share": "Share",
+    "download": "Download"
+  }
+}

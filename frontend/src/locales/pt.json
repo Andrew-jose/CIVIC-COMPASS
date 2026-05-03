@@ -1,0 +1,18 @@
+{
+  "app": { "title": "Bússola Cívica", "tagline": "Todo cidadão. Toda eleição. Zero confusão.", "getStarted": "Começar", "backToHome": "← Início" },
+  "landing": {
+    "heroTitle": "Seu Guia Eleitoral Pessoal",
+    "heroSubtitle": "Inteligência cívica com IA que guia você em cada etapa do processo eleitoral — personalizado para sua jurisdição.",
+    "addressPlaceholder": "Digite seu endereço para começar...",
+    "startJourney": "Iniciar Minha Jornada",
+    "features": { "timeline": "Cronograma Eleitoral", "timelineDesc": "Cronograma visual interativo com todas as datas eleitorais", "checklist": "Lista de Verificação", "checklistDesc": "Lista personalizada de preparação passo a passo", "ballot": "Explicador de Cédula", "ballotDesc": "Envie sua cédula para explicações em linguagem simples", "factcheck": "Verificador de Fatos", "factcheckDesc": "Verifique alegações cívicas com fontes oficiais" },
+    "trust": "Apartidário • Apenas fontes oficiais • Zero alucinação"
+  },
+  "journey": { "title": "Sua Jornada Eleitoral", "inputPlaceholder": "Pergunte sobre votação, registro, prazos...", "send": "Enviar", "suggestions": { "register": "Como me registro para votar?", "deadline": "Qual é o prazo de registro?", "id": "Qual documento preciso para votar?", "mail": "Como voto por correio?" } },
+  "timeline": { "title": "Cronograma Eleitoral", "nextDeadline": "Próximo Prazo", "daysLeft": "dias restantes", "setReminder": "Definir Lembrete" },
+  "checklist": { "title": "Lista de Preparação do Eleitor", "progress": "Progresso", "complete": "Você está totalmente preparado para votar! 🎉", "critical": "Crítico", "important": "Importante", "optional": "Opcional" },
+  "ballot": { "title": "Explicador de Cédula", "uploadPrompt": "Envie seu PDF da cédula", "dragDrop": "Arraste e solte o PDF aqui", "analyzing": "Analisando sua cédula..." },
+  "factcheck": { "title": "Verificador de Fatos Cívicos", "inputPlaceholder": "Digite uma alegação para verificar...", "verify": "Verificar", "verdicts": { "true": "Verdadeiro", "false": "Falso", "partial": "Parcialmente Verdadeiro", "unverifiable": "Não Verificável" } },
+  "history": { "title": "Histórico de Sessões", "empty": "Suas conversas anteriores aparecerão aqui.", "clearAll": "Limpar Tudo", "resume": "Retomar" },
+  "common": { "loading": "Carregando...", "error": "Algo deu errado", "retry": "Tentar Novamente", "sources": "Fontes", "confidence": "Confiança", "share": "Compartilhar", "download": "Baixar" }
+}

@@ -1,0 +1,18 @@
+{
+  "app": { "title": "公民指南针", "tagline": "每位公民。每次选举。零困惑。", "getStarted": "开始", "backToHome": "← 首页" },
+  "landing": {
+    "heroTitle": "您的个人选举指南",
+    "heroSubtitle": "AI驱动的公民智能，引导您完成选举过程的每一步——根据您的管辖区域进行个性化定制。",
+    "addressPlaceholder": "输入您的地址以开始...",
+    "startJourney": "开始我的旅程",
+    "features": { "timeline": "选举时间线", "timelineDesc": "可视化交互式时间线，包含所有关键选举日期", "checklist": "选民清单", "checklistDesc": "个性化的分步准备清单", "ballot": "选票解释器", "ballotDesc": "上传您的选票以获取通俗易懂的解释", "factcheck": "事实核查", "factcheckDesc": "使用官方来源验证公民声明" },
+    "trust": "无党派 • 仅使用官方来源 • 零幻觉"
+  },
+  "journey": { "title": "您的选举之旅", "inputPlaceholder": "询问投票、注册、截止日期...", "send": "发送", "suggestions": { "register": "如何注册投票？", "deadline": "注册截止日期是什么时候？", "id": "投票需要什么身份证件？", "mail": "如何邮寄投票？" } },
+  "timeline": { "title": "选举时间线", "nextDeadline": "下一个截止日期", "daysLeft": "天剩余", "setReminder": "设置提醒" },
+  "checklist": { "title": "选民准备清单", "progress": "进度", "complete": "您已完全准备好投票！🎉", "critical": "关键", "important": "重要", "optional": "可选" },
+  "ballot": { "title": "选票解释器", "uploadPrompt": "上传您的选票PDF", "dragDrop": "将选票PDF拖放到此处", "analyzing": "正在分析您的选票..." },
+  "factcheck": { "title": "公民事实核查", "inputPlaceholder": "输入要验证的公民声明...", "verify": "验证", "verdicts": { "true": "真实", "false": "虚假", "partial": "部分真实", "unverifiable": "无法验证" } },
+  "history": { "title": "会话历史", "empty": "您之前的对话将显示在这里。", "clearAll": "清除全部", "resume": "继续" },
+  "common": { "loading": "加载中...", "error": "出现错误", "retry": "重试", "sources": "来源", "confidence": "置信度", "share": "分享", "download": "下载" }
+}

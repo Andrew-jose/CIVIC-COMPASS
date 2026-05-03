@@ -1,0 +1,42 @@
+{
+  "app": {
+    "title": "Brújula Cívica",
+    "tagline": "Cada ciudadano. Cada elección. Cero confusión.",
+    "getStarted": "Comenzar",
+    "backToHome": "← Inicio"
+  },
+  "landing": {
+    "heroTitle": "Tu Guía Electoral Personal",
+    "heroSubtitle": "Inteligencia cívica impulsada por IA que te guía paso a paso en el proceso electoral — personalizada para tu jurisdicción exacta.",
+    "addressPlaceholder": "Ingresa tu dirección para comenzar...",
+    "startJourney": "Iniciar Mi Recorrido",
+    "features": {
+      "timeline": "Cronograma Electoral",
+      "timelineDesc": "Cronograma visual interactivo con todas tus fechas electorales clave",
+      "checklist": "Lista de Verificación",
+      "checklistDesc": "Lista personalizada paso a paso de preparación",
+      "ballot": "Explicador de Boleta",
+      "ballotDesc": "Sube tu boleta para explicaciones en lenguaje sencillo",
+      "factcheck": "Verificador de Hechos",
+      "factcheckDesc": "Verifica afirmaciones cívicas con fuentes oficiales"
+    },
+    "trust": "No partidista • Solo fuentes oficiales • Cero alucinación"
+  },
+  "journey": {
+    "title": "Tu Recorrido Electoral",
+    "inputPlaceholder": "Pregunta sobre votación, registro, plazos...",
+    "send": "Enviar",
+    "suggestions": {
+      "register": "¿Cómo me registro para votar?",
+      "deadline": "¿Cuándo es la fecha límite de registro?",
+      "id": "¿Qué identificación necesito para votar?",
+      "mail": "¿Cómo voto por correo?"
+    }
+  },
+  "timeline": { "title": "Cronograma Electoral", "nextDeadline": "Próxima Fecha Límite", "daysLeft": "días restantes", "setReminder": "Establecer Recordatorio" },
+  "checklist": { "title": "Lista de Preparación del Votante", "progress": "Progreso", "complete": "¡Estás completamente preparado para votar! 🎉", "critical": "Crítico", "important": "Importante", "optional": "Opcional" },
+  "ballot": { "title": "Explicador de Boleta", "uploadPrompt": "Sube tu boleta PDF para un desglose en lenguaje sencillo", "dragDrop": "Arrastra y suelta tu boleta PDF aquí", "analyzing": "Analizando tu boleta..." },
+  "factcheck": { "title": "Verificador de Hechos Cívicos", "inputPlaceholder": "Ingresa una afirmación cívica para verificar...", "verify": "Verificar", "verdicts": { "true": "Verdadero", "false": "Falso", "partial": "Parcialmente Verdadero", "unverifiable": "No Verificable" } },
+  "history": { "title": "Historial de Sesiones", "empty": "Tus conversaciones anteriores aparecerán aquí.", "clearAll": "Borrar Todo", "resume": "Reanudar" },
+  "common": { "loading": "Cargando...", "error": "Algo salió mal", "retry": "Intentar de Nuevo", "sources": "Fuentes", "confidence": "Confianza", "share": "Compartir", "download": "Descargar" }
+}

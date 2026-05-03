@@ -1,0 +1,18 @@
+{
+  "app": { "title": "Boussole Civique", "tagline": "Chaque citoyen. Chaque élection. Zéro confusion.", "getStarted": "Commencer", "backToHome": "← Accueil" },
+  "landing": {
+    "heroTitle": "Votre Guide Électoral Personnel",
+    "heroSubtitle": "Intelligence civique alimentée par l'IA qui vous guide à chaque étape du processus électoral — personnalisée pour votre juridiction exacte.",
+    "addressPlaceholder": "Entrez votre adresse pour commencer...",
+    "startJourney": "Commencer Mon Parcours",
+    "features": { "timeline": "Chronologie Électorale", "timelineDesc": "Chronologie visuelle interactive avec toutes vos dates clés", "checklist": "Liste de Vérification", "checklistDesc": "Liste personnalisée de préparation étape par étape", "ballot": "Explicateur de Bulletin", "ballotDesc": "Téléchargez votre bulletin pour des explications simples", "factcheck": "Vérificateur de Faits", "factcheckDesc": "Vérifiez les affirmations civiques avec des sources officielles" },
+    "trust": "Non partisan • Sources officielles uniquement • Zéro hallucination"
+  },
+  "journey": { "title": "Votre Parcours Électoral", "inputPlaceholder": "Posez des questions sur le vote, l'inscription...", "send": "Envoyer", "suggestions": { "register": "Comment m'inscrire pour voter ?", "deadline": "Quelle est la date limite d'inscription ?", "id": "Quelle pièce d'identité faut-il ?", "mail": "Comment voter par courrier ?" } },
+  "timeline": { "title": "Chronologie Électorale", "nextDeadline": "Prochaine Échéance", "daysLeft": "jours restants", "setReminder": "Définir un Rappel" },
+  "checklist": { "title": "Liste de Préparation", "progress": "Progrès", "complete": "Vous êtes prêt à voter ! 🎉", "critical": "Critique", "important": "Important", "optional": "Optionnel" },
+  "ballot": { "title": "Explicateur de Bulletin", "uploadPrompt": "Téléchargez votre bulletin PDF", "dragDrop": "Glissez-déposez votre bulletin PDF ici", "analyzing": "Analyse en cours..." },
+  "factcheck": { "title": "Vérificateur de Faits", "inputPlaceholder": "Entrez une affirmation à vérifier...", "verify": "Vérifier", "verdicts": { "true": "Vrai", "false": "Faux", "partial": "Partiellement Vrai", "unverifiable": "Non Vérifiable" } },
+  "history": { "title": "Historique", "empty": "Vos conversations précédentes apparaîtront ici.", "clearAll": "Tout Effacer", "resume": "Reprendre" },
+  "common": { "loading": "Chargement...", "error": "Une erreur est survenue", "retry": "Réessayer", "sources": "Sources", "confidence": "Confiance", "share": "Partager", "download": "Télécharger" }
+}

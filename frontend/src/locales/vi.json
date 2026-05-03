@@ -1,0 +1,18 @@
+{
+  "app": { "title": "La Bàn Công Dân", "tagline": "Mọi công dân. Mọi cuộc bầu cử. Không nhầm lẫn.", "getStarted": "Bắt đầu", "backToHome": "← Trang chủ" },
+  "landing": {
+    "heroTitle": "Hướng Dẫn Bầu Cử Cá Nhân",
+    "heroSubtitle": "Trí tuệ công dân do AI cung cấp hướng dẫn bạn qua từng bước của quy trình bầu cử — được cá nhân hóa cho khu vực pháp lý của bạn.",
+    "addressPlaceholder": "Nhập địa chỉ để bắt đầu...",
+    "startJourney": "Bắt Đầu Hành Trình",
+    "features": { "timeline": "Lịch Trình Bầu Cử", "timelineDesc": "Lịch trình trực quan tương tác với tất cả các ngày bầu cử quan trọng", "checklist": "Danh Sách Kiểm Tra", "checklistDesc": "Danh sách chuẩn bị cá nhân hóa từng bước", "ballot": "Giải Thích Phiếu Bầu", "ballotDesc": "Tải phiếu bầu lên để được giải thích bằng ngôn ngữ đơn giản", "factcheck": "Kiểm Tra Sự Thật", "factcheckDesc": "Xác minh tuyên bố công dân với nguồn chính thức" },
+    "trust": "Phi đảng phái • Chỉ nguồn chính thức • Không ảo giác"
+  },
+  "journey": { "title": "Hành Trình Bầu Cử", "inputPlaceholder": "Hỏi về bỏ phiếu, đăng ký, hạn chót...", "send": "Gửi", "suggestions": { "register": "Làm sao để đăng ký bỏ phiếu?", "deadline": "Hạn chót đăng ký khi nào?", "id": "Cần giấy tờ gì để bỏ phiếu?", "mail": "Làm sao bỏ phiếu qua bưu điện?" } },
+  "timeline": { "title": "Lịch Trình Bầu Cử", "nextDeadline": "Hạn Chót Tiếp Theo", "daysLeft": "ngày còn lại", "setReminder": "Đặt Nhắc Nhở" },
+  "checklist": { "title": "Danh Sách Chuẩn Bị Cử Tri", "progress": "Tiến Độ", "complete": "Bạn đã sẵn sàng bỏ phiếu! 🎉", "critical": "Quan trọng", "important": "Cần thiết", "optional": "Tùy chọn" },
+  "ballot": { "title": "Giải Thích Phiếu Bầu", "uploadPrompt": "Tải PDF phiếu bầu lên", "dragDrop": "Kéo và thả PDF vào đây", "analyzing": "Đang phân tích phiếu bầu..." },
+  "factcheck": { "title": "Kiểm Tra Sự Thật Công Dân", "inputPlaceholder": "Nhập tuyên bố để xác minh...", "verify": "Xác Minh", "verdicts": { "true": "Đúng", "false": "Sai", "partial": "Đúng Một Phần", "unverifiable": "Không Thể Xác Minh" } },
+  "history": { "title": "Lịch Sử Phiên", "empty": "Các cuộc trò chuyện trước sẽ xuất hiện ở đây.", "clearAll": "Xóa Tất Cả", "resume": "Tiếp Tục" },
+  "common": { "loading": "Đang tải...", "error": "Đã xảy ra lỗi", "retry": "Thử Lại", "sources": "Nguồn", "confidence": "Độ Tin Cậy", "share": "Chia Sẻ", "download": "Tải Xuống" }
+}

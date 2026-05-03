@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   CIVIC COMPASS — Design System
+   High-contrast, accessible civic design with WCAG 2.2 AA compliance
+   ═══════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-civic-blue: #1A56DB;
+  --color-civic-blue-light: #3B82F6;
+  --color-civic-blue-dark: #1E40AF;
+  --color-civic-green: #0E9F6E;
+  --color-civic-green-light: #34D399;
+  --color-civic-amber: #C27803;
+  --color-civic-amber-light: #FBBF24;
+  --color-civic-red: #E02424;
+  --color-civic-red-light: #F87171;
+  --color-surface-primary: #0F172A;
+  --color-surface-secondary: #1E293B;
+  --color-surface-tertiary: #334155;
+  --color-surface-card: #1E293B;
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-border-default: #334155;
+  --color-border-subtle: #1E293B;
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Base ──────────────────────────────────────────── */
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+  }
+
+  /* Skip navigation link for accessibility */
+  .skip-nav {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 9999;
+    padding: 1rem 1.5rem;
+    background: var(--color-civic-blue);
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    transition: top 0.2s ease;
+  }
+
+  .skip-nav:focus {
+    top: 0;
+  }
+
+  /* Focus visible indicator — 3px outline for keyboard navigation */
+  *:focus-visible {
+    outline: 3px solid var(--color-civic-blue-light);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── Chat Bubbles ─────────────────────────────────── */
+
+.chat-bubble-user {
+  background: linear-gradient(135deg, var(--color-civic-blue), var(--color-civic-blue-dark));
+  color: white;
+  border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+  padding: 0.875rem 1.25rem;
+  max-width: 80%;
+  word-break: break-word;
+}
+
+.chat-bubble-ai {
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+  border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+  padding: 0.875rem 1.25rem;
+  max-width: 85%;
+  word-break: break-word;
+}
+
+/* ── Confidence Bar ───────────────────────────────── */
+
+.confidence-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-surface-tertiary);
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.confidence-high { background: var(--color-civic-green); }
+.confidence-medium { background: var(--color-civic-amber); }
+.confidence-low { background: var(--color-civic-red); }
+
+/* ── Timeline ─────────────────────────────────────── */
+
+.timeline-connector {
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--color-civic-blue) 0%,
+    var(--color-civic-green) 100%
+  );
+}
+
+.milestone-pulse {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26, 86, 219, 0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(26, 86, 219, 0); }
+}
+
+/* ── Streaming Text Cursor ────────────────────────── */
+
+.streaming-cursor::after {
+  content: '▊';
+  animation: blink 1s step-end infinite;
+  color: var(--color-civic-blue-light);
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ── Glass Card ───────────────────────────────────── */
+
+.glass-card {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 1rem;
+}
+
+/* ── Gradient Text ────────────────────────────────── */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-civic-blue-light), var(--color-civic-green-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Scrollbar ────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-default);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
