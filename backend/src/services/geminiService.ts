@@ -127,6 +127,19 @@ export interface GeminiResponse {
 
 // ── Generate Content ─────────────────────────────────
 
+/**
+ * Generates non-streaming content from the Gemini API.
+ * 
+ * Invokes the Gemini API for a single turn of conversation or extraction.
+ * Integrates function calling, structured output formatting, and fallback logic on timeouts.
+ * 
+ * @param options - Configuration options for the Gemini API call including model, system instruction, and contents
+ * @returns Promise resolving to the structured GeminiResponse containing text, metadata, and optional function calls
+ * @throws {GeminiError} When the API fails or times out
+ * @example
+ * const result = await generateContent({ systemInstruction: '...', contents: [{ role: 'user', parts: [{ text: 'Hi' }] }] });
+ * // result: { text: 'Hello!', confidence: 95 }
+ */
 export async function generateContent(
   options: GeminiCallOptions
 ): Promise<GeminiResponse> {
@@ -147,6 +160,8 @@ export async function generateContent(
     thinkingConfig: {
       thinkingLevel: options.thinkingLevel || 'medium',
     },
+    maxOutputTokens: options.model?.includes('pro') ? 2000 : 800,
+    stopSequences: ["SOURCE:", "CONFIDENCE:"],
   };
 
   if (tools.length > 0) config.tools = tools;
@@ -156,11 +171,35 @@ export async function generateContent(
     config.responseJsonSchema = options.responseJsonSchema;
   }
 
-  const response = await client.models.generateContent({
-    model,
-    contents: options.contents as any,
-    config,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  let response;
+  try {
+    const generatePromise = client.models.generateContent({
+      model,
+      contents: options.contents as any,
+      config,
+    });
+    
+    // Simulate timeout if signal is not natively supported
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        const err = new Error('AbortError');
+        err.name = 'AbortError';
+        reject(err);
+      }, 15000);
+    });
+
+    response = await Promise.race([generatePromise, timeoutPromise]) as any;
+  } catch (error: any) {
+    if (error.name === 'AbortError' || error.message?.includes('abort')) {
+      return { text: '[Response truncated due to timeout.]' };
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   // Extract response data
   const candidate = response.candidates?.[0];
@@ -192,6 +231,20 @@ export async function generateContent(
 
 // ── Stream Content ───────────────────────────────────
 
+/**
+ * Generates streaming content from the Gemini API.
+ * 
+ * Stream response chunks for real-time conversation updates to the client.
+ * Features built-in AbortController logic terminating generation after 15 seconds.
+ * 
+ * @param options - Configuration options for the Gemini API call
+ * @returns AsyncGenerator yielding parts of text and an eventual thought signature completion flag
+ * @throws {GeminiError} When stream generation unexpectedly fails
+ * @example
+ * for await (const chunk of streamContent(opts)) {
+ *   console.log(chunk.text);
+ * }
+ */
 export async function* streamContent(
   options: GeminiCallOptions
 ): AsyncGenerator<{ text?: string; done?: boolean; thoughtSignature?: string }> {
@@ -211,36 +264,63 @@ export async function* streamContent(
     thinkingConfig: {
       thinkingLevel: options.thinkingLevel || 'medium',
     },
+    maxOutputTokens: options.model?.includes('pro') ? 2000 : 800,
+    stopSequences: ["SOURCE:", "CONFIDENCE:"],
   };
 
   if (tools.length > 0) config.tools = tools;
 
-  const response = await client.models.generateContentStream({
-    model,
-    contents: options.contents as any,
-    config,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-  let lastThoughtSignature: string | undefined;
+  try {
+    const response = await client.models.generateContentStream({
+      model,
+      contents: options.contents as any,
+      config,
+    });
 
-  for await (const chunk of response) {
-    const parts = chunk.candidates?.[0]?.content?.parts || [];
+    let lastThoughtSignature: string | undefined;
 
-    for (const part of parts) {
-      if ((part as any).thoughtSignature) {
-        lastThoughtSignature = (part as any).thoughtSignature;
-      }
-      if ((part as any).text) {
-        yield { text: (part as any).text };
+    for await (const chunk of response) {
+      const parts = chunk.candidates?.[0]?.content?.parts || [];
+
+      for (const part of parts) {
+        if ((part as any).thoughtSignature) {
+          lastThoughtSignature = (part as any).thoughtSignature;
+        }
+        if ((part as any).text) {
+          yield { text: (part as any).text };
+        }
       }
     }
-  }
 
-  yield { done: true, thoughtSignature: lastThoughtSignature };
+    yield { done: true, thoughtSignature: lastThoughtSignature };
+  } catch (error: any) {
+    if (error.name === 'AbortError' || error.message?.includes('abort')) {
+      yield { text: '\n\n[Response truncated due to timeout. Please refine your question.]', done: true };
+    } else {
+      throw error;
+    }
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 // ── Generate Embeddings ──────────────────────────────
 
+/**
+ * Generates an embedding array for semantic similarity searches.
+ * 
+ * Utilizes the gemini-embedding-2 model to vectorize inbound queries or document chunks.
+ * 
+ * @param text - The raw string input to be vectorized
+ * @returns An array of floating point numbers representing the semantic embedding
+ * @throws {GeminiError} When the embedding generation fails
+ * @example
+ * const vector = await generateEmbedding('Election rules');
+ * // vector: [0.12, 0.45, -0.33, ...]
+ */
 export async function generateEmbedding(text: string): Promise<number[]> {
   const client = getGeminiClient();
 

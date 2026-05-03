@@ -106,6 +106,19 @@ export function getStateElectionWebsite(stateAbbr: string): string {
  * Resolve an address to jurisdiction context.
  * In production, this calls the Google Civic Information API.
  */
+/**
+ * Resolves a raw text address into a structured Jurisdiction object.
+ * 
+ * Standardizes state and county mappings, flagging unsupported regions
+ * and extracting specific FIPS codes for further civic API chaining.
+ * 
+ * @param address - Raw string address provided by the voter
+ * @returns A structured Jurisdiction containing state, county, and FIPS code
+ * @throws {JurisdictionError} If the state or county cannot be resolved
+ * @example
+ * const jurisdiction = await resolveJurisdiction('123 Main St, Austin, TX');
+ * // jurisdiction: { state: 'TX', county: 'Travis', fips: '48453' }
+ */
 export async function resolveJurisdiction(
   address: string
 ): Promise<JurisdictionContext> {

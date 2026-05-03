@@ -1,26 +1,51 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Sessions — users can only access their own session
-    match /sessions/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-
-      // Conversations — nested under user session
-      match /conversations/{conversationId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-
-      // Checklists — nested under user session
-      match /checklists/{checklistId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+  
+    // Users can only access their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null 
+                         && request.auth.uid == userId;
+      
+      // Nested sessions
+      match /sessions/{sessionId} {
+        allow read, write: if request.auth != null
+                           && request.auth.uid == userId;
+        // Validate session document structure on write
+        allow create: if validateSessionDoc(request.resource.data);
+        allow update: if validateSessionUpdate(
+                         request.resource.data, 
+                         resource.data);
       }
     }
-
-    // Default deny all
-    match /{document=**} {
-      allow read, write: if false;
+    
+    // Public read-only civic data (no auth required)
+    match /civicData/{jurisdiction} {
+      allow read: if true;
+      allow write: if false; // only writable by backend service account
     }
+    
+    // Rate limit tracking (backend writes only)
+    match /rateLimits/{userId} {
+      allow read: if request.auth != null 
+                  && request.auth.uid == userId;
+      allow write: if false;
+    }
+    
+    match /securityLogs/{logId} {
+      allow read, write: if false; // only writable by backend service account
+    }
+  }
+  
+  // Validation functions
+  function validateSessionDoc(data) {
+    return data.keys().hasAll(['createdAt', 'status'])
+           && data.status in ['active', 'closed']
+           && data.createdAt is timestamp;
+  }
+  
+  function validateSessionUpdate(newData, oldData) {
+    return newData.createdAt == oldData.createdAt 
+           && newData.status in ['active', 'closed'];
   }
 }

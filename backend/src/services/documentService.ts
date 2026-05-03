@@ -185,6 +185,19 @@ export async function processDocument(
  * Chunk ballot text into sections for parallel processing.
  * Splits on section/measure boundaries.
  */
+/**
+ * Breaks down raw ballot text into individual measure or candidate chunks.
+ * 
+ * Uses regex delimiters to separate long, unstructured OCR text into
+ * processable objects, ensuring each chunk respects maximum token constraints.
+ * 
+ * @param text - The raw text payload from a parsed PDF
+ * @returns An array of string chunks, each representing a single ballot item
+ * @throws {Error} If the text format is entirely unrecognized
+ * @example
+ * const chunks = chunkBallotText("PROPOSITION 1: Build roads...");
+ * // chunks: ["PROPOSITION 1: Build roads..."]
+ */
 export function chunkBallotText(
   fullText: string,
   maxChunkSize: number = 4000

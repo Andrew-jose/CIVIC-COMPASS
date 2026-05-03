@@ -1,0 +1,27 @@
+{
+  "name": "civic-compass-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:unit": "cd backend && jest --testPathPattern=unit",
+    "test:integration": "cd backend && jest --testPathPattern=integration",
+    "test:components": "cd frontend && vitest run",
+    "test:e2e": "cd frontend && npx playwright test",
+    "test:ai": "cd backend && jest --testPathPattern=ai-validation",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:components && npm run test:e2e && npm run test:ai",
+    "test:coverage": "cd backend && jest --coverage",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^2.8.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
