@@ -1,7 +1,32 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,                                    // ENABLES ALL STRICT CHECKS
+    "noImplicitAny": true,                             // PREVENTS SILENT UNTYPED FALLBACK: E.g., when destructuring an unknown prop in a React component.
+    "strictNullChecks": true,                          // PREVENTS RUNTIME NULL ERRORS: E.g., trying to render `user.name` before `user` is fully loaded.
+    "exactOptionalPropertyTypes": true,                // PREVENTS BAD COMPONENT PROPS: Ensures optional props are either omitted or the exact type, not explicitly passed as `undefined` if not supported.
+    "noUncheckedIndexedAccess": true,                  // PREVENTS OUT OF BOUNDS RENDERING: Forces checking array bounds (e.g., `items[0]`) before rendering to avoid UI crashes.
+    "noImplicitReturns": true,                         // PREVENTS SILENT UNDEFINED COMPONENTS: Ensures all branches in functional components or hooks return a value.
+    "noFallthroughCasesInSwitch": true,                // PREVENTS ACCIDENTAL FALLTHROUGH: E.g., in a complex useReducer dispatch function.
+    "useUnknownInCatchVariables": true,                // FORCES TYPE GUARDS IN ERROR BOUNDARIES: Prevents assuming `e.message` exists in a try/catch block.
+    "noUnusedLocals": true,                            // CATCHES INCOMPLETE REFACTORS: E.g., unused hooks or intermediate computed values.
+    "noUnusedParameters": true,                        // ENSURES CLEAN COMPONENT PROPS: Removes unused destructured props.
+    "noImplicitOverride": true,                        // PREVENTS BROKEN CLASS COMPONENTS: Useful if legacy class components exist.
+    "noPropertyAccessFromIndexSignature": true,        // FORCES BRACKET NOTATION FOR RECORD TYPES: E.g., when accessing dynamic translation keys `t[key]`.
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

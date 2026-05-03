@@ -1,80 +1,65 @@
-import { Router, Request, Response } from 'express';
-import { generateContent, MODELS, THINKING_PRESETS } from '../services/geminiService';
-import { buildSystemPrompt, JurisdictionContext } from '../prompts/systemPrompt';
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * CIVIC COMPASS — Timeline Route Handler
+ *
+ * Generates personalized election timelines using Gemini 3 with
+ * Structured Output and Google Search grounding.
+ *
+ * @civic-safety
+ *   - Uses timelineFlow which wraps generateContent in fromPromise().
+ *   - All errors are typed AppError variants.
+ *   - Confidence scoring validates dates against jurisdiction data.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
+import { Router } from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import { timelineFlow } from '../services/genkitFlows';
+import { match } from '../../../shared/utils/Result';
+import type { JurisdictionContext } from '../prompts/systemPrompt';
+import { asyncHandler } from '../middleware/errorHandler';
 
 export const timelineRouter = Router();
 
-const TIMELINE_SCHEMA = {
-  type: 'object',
-  properties: {
-    milestones: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'string' },
-          title: { type: 'string' },
-          date: { type: 'string', description: 'ISO 8601 date' },
-          description: { type: 'string' },
-          actionRequired: { type: 'string' },
-          status: { type: 'string', enum: ['upcoming', 'urgent', 'today', 'passed'] },
-          priority: { type: 'string', enum: ['critical', 'important', 'optional'] },
-        },
-        required: ['id', 'title', 'date', 'description', 'status'],
-      },
-    },
-    nextDeadline: {
-      type: 'object',
-      properties: {
-        title: { type: 'string' },
-        date: { type: 'string' },
-        daysUntil: { type: 'number' },
-      },
-    },
-  },
-  required: ['milestones'],
-};
-
 /**
  * POST /api/v1/timeline
- * Generate a personalized election timeline using Gemini 3 with Structured Output.
+ *
+ * Generates a complete election timeline using Gemini 3 with Structured Output.
+ * Uses the timelineFlow which returns Result<FlowResult, AppError>.
+ *
+ * @civic-safety
+ *   - Model: Gemini 3.1 Pro with deep thinking for date accuracy.
+ *   - Grounding: Google Search for real-time date verification.
+ *   - Post-generation: assessConfidence() cross-validates dates.
+ *   - If confidence < 60, the response includes a warning.
  */
-timelineRouter.post('/', async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { jurisdictionContext, language = 'English' } = req.body as {
-      jurisdictionContext: JurisdictionContext;
-      language?: string;
-    };
+timelineRouter.post('/', asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const body = req.body as {
+    jurisdictionContext: JurisdictionContext;
+    language?: string;
+  };
 
-    if (!jurisdictionContext?.state) {
-      res.status(400).json({ error: { message: 'Jurisdiction context is required' } });
-      return;
-    }
+  const jurisdictionContext = body.jurisdictionContext;
+  const language = body.language ?? 'English';
 
-    const systemInstruction = buildSystemPrompt(jurisdictionContext, language);
-
-    const response = await generateContent({
-      model: MODELS.FLASH,
-      systemInstruction,
-      contents: [{
-        role: 'user',
-        parts: [{
-          text: `Generate a complete election timeline for ${jurisdictionContext.county}, ${jurisdictionContext.state}. Include all key dates: registration deadline, early voting, Election Day, mail-in ballot deadline, and any other relevant dates from the CONTEXT. For each milestone, provide a plain-language description of what it means and what the voter needs to do. Mark each milestone's status based on today's date (${new Date().toISOString().split('T')[0]}).`,
-        }],
-      }],
-      thinkingLevel: THINKING_PRESETS.MODERATE,
-      useGoogleSearch: true,
-      responseJsonSchema: TIMELINE_SCHEMA,
-    });
-
-    const timeline = JSON.parse(response.text);
-    res.json({
-      timeline,
-      groundingMetadata: response.groundingMetadata,
-      confidence: response.confidence,
-    });
-  } catch (error: any) {
-    console.error('[TIMELINE] Generation error:', error);
-    res.status(500).json({ error: { message: 'Failed to generate timeline' } });
+  if (!jurisdictionContext?.state) {
+    res.status(400).json({ error: { message: 'Jurisdiction context is required' } });
+    return;
   }
-});
+
+  const result = await timelineFlow(jurisdictionContext, language);
+
+  match(result, {
+    ok: (flow) => {
+      const timeline = JSON.parse(flow.data) as Record<string, unknown>;
+      res.json({
+        timeline,
+        groundingMetadata: flow.groundingMetadata,
+        confidence: flow.confidence,
+      });
+    },
+    err: (error) => {
+      next(error);
+    },
+  });
+}));

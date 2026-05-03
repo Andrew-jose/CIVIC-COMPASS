@@ -15,11 +15,52 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting */
+    // ── Strict Safety Net ────────────────────────────────────────────
+    // Prevents rendering untyped Gemini API responses without validation
+    "strict": true,
+    // Catches untyped event handler parameters in React components
+    "noImplicitAny": true,
+    // Forces null checks when rendering optional jurisdiction data in timeline/checklist
+    "strictNullChecks": true,
+    // Prevents passing wrong handler shapes to React event props
+    "strictFunctionTypes": true,
+    // Catches .bind()/.call() errors on context-sensitive callbacks
+    "strictBindCallApply": true,
+    // Forces class component fields to be initialized (MobX stores, etc.)
+    "strictPropertyInitialization": true,
+    // Prevents `this` context loss in class components and store methods
+    "noImplicitThis": true,
+    // Emits 'use strict' — prevents silent variable leaks in browser
+    "alwaysStrict": true,
+
+    // ── Unused Code Detection ────────────────────────────────────────
+    // Catches leftover imports and debug variables before production build
     "noUnusedLocals": true,
+    // Catches unread parameters signaling incomplete component refactors
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+
+    // ── Type Precision ───────────────────────────────────────────────
+    // Distinguishes optional vs undefined in component props — critical for SSE state
+    "exactOptionalPropertyTypes": true,
+    // Every code path must return — prevents undefined renders in conditional components
+    "noImplicitReturns": true,
+    // Prevents fallthrough in switch on route/view state discriminants
+    "noFallthroughCasesInSwitch": true,
+    // Array[i] returns T | undefined — catches missing timeline milestones
+    "noUncheckedIndexedAccess": true,
+    // Forces explicit `override` on class method overrides
+    "noImplicitOverride": true,
+    // Forces bracket notation for index signatures — prevents typo access
+    "noPropertyAccessFromIndexSignature": true,
+    // `catch(e)` gives unknown — forces proper error display to voter
+    "useUnknownInCatchVariables": true,
+    // Dead code flagged — catches logic errors in conditional rendering
+    "allowUnreachableCode": false,
+    // Unused labels flagged
+    "allowUnusedLabels": false,
+
+    /* Linting */
+    "erasableSyntaxOnly": true
   },
   "include": ["src"]
 }

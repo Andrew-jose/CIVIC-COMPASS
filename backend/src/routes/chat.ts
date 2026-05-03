@@ -1,41 +1,70 @@
-import { Router, Request, Response } from 'express';
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * CIVIC COMPASS — Chat Route Handler
+ *
+ * Streams Gemini 3 responses via Server-Sent Events (SSE).
+ * This is the primary user-facing endpoint — every conversation
+ * in the UI flows through this route.
+ *
+ * Architecture:
+ *   Request → Validate → Build prompt → Stream Gemini → SSE events
+ *
+ * @civic-safety
+ *   - System prompt enforces grounding contract (no hallucinated facts).
+ *   - Google Search is enabled only when jurisdiction is resolved.
+ *   - Without jurisdiction, the onboarding prompt is used (no facts).
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
+import { Router } from 'express';
+import type { Request, Response } from 'express';
 import {
   streamContent,
   MODELS,
   THINKING_PRESETS,
-  ChatMessage,
 } from '../services/geminiService';
-import { buildSystemPrompt, buildOnboardingPrompt, JurisdictionContext } from '../prompts/systemPrompt';
+import type { ChatMessage } from '../services/geminiService';
+import { buildSystemPrompt, buildOnboardingPrompt } from '../prompts/systemPrompt';
+import type { JurisdictionContext } from '../prompts/systemPrompt';
 
 export const chatRouter = Router();
 
+/**
+ * Shape of the POST body for /api/v1/chat.
+ */
 interface ChatRequestBody {
-  message: string;
-  conversationHistory?: ChatMessage[];
-  jurisdictionContext?: JurisdictionContext;
-  language?: string;
-  thoughtSignatures?: Record<number, string>;
+  readonly message: string;
+  readonly conversationHistory?: ReadonlyArray<ChatMessage>;
+  readonly jurisdictionContext?: JurisdictionContext;
+  readonly language?: string;
+  readonly thoughtSignatures?: Record<number, string>;
 }
 
 /**
  * POST /api/v1/chat
- * Streams Gemini 3 response via Server-Sent Events (SSE).
- * 
+ *
+ * Streams a Gemini 3 response via Server-Sent Events (SSE).
+ *
  * Uses:
- *   - Gemini 3 Flash for fast conversational responses
- *   - Google Search grounding for real-time verification
- *   - URL Context for official source reading
- *   - Thought Signatures for reasoning chain persistence
- *   - thinkingLevel: "medium" for balanced speed/quality
+ *   - Gemini 3 Flash for fast conversational responses.
+ *   - Google Search grounding for real-time verification.
+ *   - URL Context for official source reading.
+ *   - Thought Signatures for reasoning chain persistence.
+ *   - thinkingLevel: "medium" for balanced speed/quality.
+ *
+ * @civic-safety
+ *   - Streaming responses cannot be pre-validated for hallucinations.
+ *     The system prompt is the primary defense during streaming.
+ *   - Confidence scoring happens post-stream on the accumulated text
+ *     (handled by the frontend).
  */
 chatRouter.post('/', async (req: Request, res: Response): Promise<void> => {
   try {
-    const {
-      message,
-      conversationHistory = [],
-      jurisdictionContext,
-      language = 'English',
-    } = req.body as ChatRequestBody;
+    const body = req.body as ChatRequestBody;
+    const message = body.message;
+    const conversationHistory = body.conversationHistory ?? [];
+    const jurisdictionContext = body.jurisdictionContext;
+    const language = body.language ?? 'English';
 
     if (!message?.trim()) {
       res.status(400).json({ error: { message: 'Message is required' } });
@@ -60,7 +89,7 @@ chatRouter.post('/', async (req: Request, res: Response): Promise<void> => {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
+      'Connection': 'keep-alive',
       'X-Accel-Buffering': 'no',
     });
 
@@ -88,15 +117,16 @@ chatRouter.post('/', async (req: Request, res: Response): Promise<void> => {
 
     res.write('data: [DONE]\n\n');
     res.end();
-  } catch (error: any) {
-    console.error('[CHAT] Stream error:', error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[CHAT] Stream error:', errorMessage);
 
     // If headers not sent yet, send error as JSON
     if (!res.headersSent) {
       res.status(500).json({ error: { message: 'Failed to generate response' } });
     } else {
       // If already streaming, send error event
-      res.write(`data: ${JSON.stringify({ type: 'error', message: error.message })}\n\n`);
+      res.write(`data: ${JSON.stringify({ type: 'error', message: errorMessage })}\n\n`);
       res.end();
     }
   }

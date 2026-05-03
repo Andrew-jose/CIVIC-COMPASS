@@ -1,19 +1,26 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
-    "lib": ["ES2022"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
+    "strict": true,                                    // ENABLES ALL STRICT CHECKS: The baseline for preventing any 'loose' typing bugs.
+    "noImplicitAny": true,                             // PREVENTS SILENT UNTYPED FALLBACK: Ensures variables (like `req.body` or Gemini responses) aren't silently treated as 'any', preventing runtime property access errors.
+    "strictNullChecks": true,                          // PREVENTS "CANNOT READ PROPERTY OF UNDEFINED": Ensures we don't accidentally access properties on null/undefined, crucial for optional Firestore fields or missing Gemini JSON keys.
+    "exactOptionalPropertyTypes": true,                // PREVENTS INVALID FIRESTORE WRITES: Firestore throws errors if you write `undefined` explicitly. This ensures optional properties are missing, not `undefined`.
+    "noUncheckedIndexedAccess": true,                  // PREVENTS ARRAY OUT OF BOUNDS: Forces checking if array items exist (like `response.sources[0]`) instead of silently returning undefined.
+    "noImplicitReturns": true,                         // PREVENTS MISSING RETURN STATEMENTS: Ensures all code paths (e.g., in a switch statement checking AppError codes) return a Result explicitly.
+    "noFallthroughCasesInSwitch": true,                // PREVENTS ACCIDENTAL SWITCH FALLTHROUGH: Ensures every case has a break/return, avoiding bugs in reducers or error handlers.
+    "useUnknownInCatchVariables": true,                // FORCES EXPLICIT ERROR CHECKING: Treats thrown errors as 'unknown' rather than 'any', forcing type guards before accessing `.message` or `.code` on Gemini/Firestore exceptions.
+    "noUnusedLocals": true,                            // CATCHES INCOMPLETE REFACTORS: Prevents dead code and unused local variables, keeping the codebase clean and reliable.
+    "noUnusedParameters": true,                        // ENSURES ALL PARAMS ARE USED: Catches unused dependencies or context objects that should have been passed to downstream services.
+    "noImplicitOverride": true,                        // PREVENTS BROKEN INHERITANCE: Requires `override` on base class implementations (e.g., in Mock Repositories), ensuring we catch renamed base methods.
+    "noPropertyAccessFromIndexSignature": true,        // FORCES BRACKET NOTATION FOR DYNAMIC KEYS: Prevents dot-notation typos for dynamic record types, distinguishing known fields from dynamic user input.
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

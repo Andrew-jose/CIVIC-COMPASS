@@ -1,96 +1,86 @@
-import { Router, Request, Response } from 'express';
-import { generateContent, MODELS, THINKING_PRESETS } from '../services/geminiService';
-import { buildSystemPrompt, JurisdictionContext } from '../prompts/systemPrompt';
+/**
+ * ═══════════════════════════════════════════════════════════════════════
+ * CIVIC COMPASS — Checklist Route Handler
+ *
+ * Generates personalized voter readiness checklists using Gemini 3.1 Pro
+ * with Structured Output and deep reasoning.
+ *
+ * @civic-safety
+ *   - Uses checklistFlow which wraps generateContent in fromPromise().
+ *   - VoterProfile data is never logged or stored.
+ *   - Confidence scoring validates against jurisdiction dates.
+ * ═══════════════════════════════════════════════════════════════════════
+ */
+
+import { Router } from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import { checklistFlow } from '../services/genkitFlows';
+import { match } from '../../../shared/utils/Result';
+import type { JurisdictionContext } from '../prompts/systemPrompt';
+import type { VoterProfile } from '../prompts/checklistPrompt';
+import { asyncHandler } from '../middleware/errorHandler';
 
 export const checklistRouter = Router();
 
-const CHECKLIST_SCHEMA = {
-  type: 'object',
-  properties: {
-    items: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'string' },
-          title: { type: 'string' },
-          description: { type: 'string' },
-          whyItMatters: { type: 'string' },
-          deadline: { type: 'string' },
-          officialUrl: { type: 'string' },
-          priority: { type: 'string', enum: ['critical', 'important', 'optional'] },
-          completed: { type: 'boolean' },
-        },
-        required: ['id', 'title', 'description', 'priority'],
-      },
-    },
-  },
-  required: ['items'],
-};
-
 /**
  * POST /api/v1/checklist
- * Generate a personalized voter readiness checklist using Gemini 3.1 Pro
+ *
+ * Generates a personalized voter readiness checklist using Gemini 3.1 Pro
  * with Structured Output and deep reasoning (thinkingLevel: "high").
+ *
+ * @civic-safety
+ *   - Model: Gemini 3.1 Pro with deep thinking for rule interpretation.
+ *   - Grounding: Google Search for real-time requirements.
+ *   - Structured Output: JSON schema enforces checklist item shape.
+ *
+ * @privacy
+ *   - userAnswers (VoterProfile) are used only for prompt construction.
+ *   - They are NOT logged, NOT stored in Firestore, NOT included in analytics.
  */
-checklistRouter.post('/', async (req: Request, res: Response): Promise<void> => {
-  try {
-    const {
-      jurisdictionContext,
-      userAnswers,
-      language = 'English',
-    } = req.body as {
-      jurisdictionContext: JurisdictionContext;
-      userAnswers: {
-        isRegistered: boolean;
-        hasMovedRecently: boolean;
-        votingMethod: 'in-person' | 'mail' | 'undecided';
-        needsAccessibility: boolean;
-        isFirstTimeInState: boolean;
-      };
-      language?: string;
+checklistRouter.post('/', asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const body = req.body as {
+    jurisdictionContext: JurisdictionContext;
+    userAnswers: {
+      isRegistered: boolean;
+      hasMovedRecently: boolean;
+      votingMethod: 'in-person' | 'mail' | 'undecided';
+      needsAccessibility: boolean;
+      isFirstTimeInState: boolean;
     };
+    language?: string;
+  };
 
-    if (!jurisdictionContext?.state || !userAnswers) {
-      res.status(400).json({ error: { message: 'Jurisdiction context and user answers are required' } });
-      return;
-    }
+  const jurisdictionContext = body.jurisdictionContext;
+  const userAnswers = body.userAnswers;
+  const language = body.language ?? 'English';
 
-    const systemInstruction = buildSystemPrompt(jurisdictionContext, language);
-    const answersJson = JSON.stringify(userAnswers, null, 2);
-
-    const response = await generateContent({
-      model: MODELS.PRO,
-      systemInstruction,
-      contents: [{
-        role: 'user',
-        parts: [{
-          text: `Based on the user's situation below and the CONTEXT data, generate a personalized voter readiness checklist. Each item must include a clear action, why it matters, a deadline (from CONTEXT), and a link to the official resource.
-
-USER SITUATION:
-${answersJson}
-
-Assign priority levels:
-- "critical" = must complete or the user cannot vote
-- "important" = strongly recommended for a smooth experience
-- "optional" = nice to have but not required
-
-Generate 6–12 items tailored to this specific voter's situation.`,
-        }],
-      }],
-      thinkingLevel: THINKING_PRESETS.DEEP,
-      useGoogleSearch: true,
-      responseJsonSchema: CHECKLIST_SCHEMA,
-    });
-
-    const checklist = JSON.parse(response.text);
-    res.json({
-      checklist,
-      groundingMetadata: response.groundingMetadata,
-      confidence: response.confidence,
-    });
-  } catch (error: any) {
-    console.error('[CHECKLIST] Generation error:', error);
-    res.status(500).json({ error: { message: 'Failed to generate checklist' } });
+  if (!jurisdictionContext?.state || !userAnswers) {
+    res.status(400).json({ error: { message: 'Jurisdiction context and user answers are required' } });
+    return;
   }
-});
+
+  // Map request body to VoterProfile
+  const profile: VoterProfile = {
+    isRegistered: userAnswers.isRegistered,
+    hasMovedRecently: userAnswers.hasMovedRecently,
+    votingMethod: userAnswers.votingMethod,
+    needsAccessibility: userAnswers.needsAccessibility,
+    isFirstTimeInState: userAnswers.isFirstTimeInState,
+  };
+
+  const result = await checklistFlow(jurisdictionContext, profile, language);
+
+  match(result, {
+    ok: (flow) => {
+      const checklist = JSON.parse(flow.data) as Record<string, unknown>;
+      res.json({
+        checklist,
+        groundingMetadata: flow.groundingMetadata,
+        confidence: flow.confidence,
+      });
+    },
+    err: (error) => {
+      next(error);
+    },
+  });
+}));

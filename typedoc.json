@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "**/*.test.ts",
+    "**/__mocks__/*"
+  ],
+  "entryPoints": ["./backend/src/services", "./shared/utils"],
+  "out": "./docs",
+  "name": "CIVIC COMPASS API",
+  "readme": "none"
+}
